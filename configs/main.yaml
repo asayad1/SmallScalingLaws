@@ -1,0 +1,173 @@
+experiment:
+  name: main_v2
+  out_dir: outputs/main_v2
+  device: auto
+  cpu_num_threads: 1
+  seeds: [0, 1, 2]
+  schedule_regimes: [matched, fixed]
+
+data:
+  source_dir: data/wikitext103_raw
+  prepared_dir: outputs/main_v2/prepared_data
+  train_file: train.txt
+  valid_file: valid.txt
+  test_file: test.txt
+  overwrite_prepared: false
+
+# Bracket the low end (2L-16d, 2L-20d) to verify the frontier
+# is not hitting the left edge. Fill gaps in the 2-layer family
+# (44d, 52d, 60d) around where the fixed-schedule optimum sits.
+model_grid:
+  - name: gpt_2l_16d
+    n_layer: 2
+    n_head: 4
+    n_embd: 16
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_20d
+    n_layer: 2
+    n_head: 4
+    n_embd: 20
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_24d
+    n_layer: 2
+    n_head: 4
+    n_embd: 24
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_28d
+    n_layer: 2
+    n_head: 4
+    n_embd: 28
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_32d
+    n_layer: 2
+    n_head: 4
+    n_embd: 32
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_36d
+    n_layer: 2
+    n_head: 4
+    n_embd: 36
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_40d
+    n_layer: 2
+    n_head: 4
+    n_embd: 40
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_44d
+    n_layer: 2
+    n_head: 4
+    n_embd: 44
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_48d
+    n_layer: 2
+    n_head: 4
+    n_embd: 48
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_52d
+    n_layer: 2
+    n_head: 4
+    n_embd: 52
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_56d
+    n_layer: 2
+    n_head: 4
+    n_embd: 56
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_60d
+    n_layer: 2
+    n_head: 4
+    n_embd: 60
+    mlp_ratio: 4.0
+
+  - name: gpt_2l_64d
+    n_layer: 2
+    n_head: 4
+    n_embd: 64
+    mlp_ratio: 4.0
+
+  - name: gpt_3l_48d
+    n_layer: 3
+    n_head: 4
+    n_embd: 48
+    mlp_ratio: 4.0
+
+  - name: gpt_3l_56d
+    n_layer: 3
+    n_head: 4
+    n_embd: 56
+    mlp_ratio: 4.0
+
+  - name: gpt_3l_64d
+    n_layer: 3
+    n_head: 4
+    n_embd: 64
+    mlp_ratio: 4.0
+
+  - name: gpt_3l_72d
+    n_layer: 3
+    n_head: 4
+    n_embd: 72
+    mlp_ratio: 4.0
+
+  - name: gpt_3l_80d
+    n_layer: 3
+    n_head: 4
+    n_embd: 80
+    mlp_ratio: 4.0
+
+  - name: gpt_4l_80d
+    n_layer: 4
+    n_head: 4
+    n_embd: 80
+    mlp_ratio: 4.0
+
+  - name: gpt_4l_96d
+    n_layer: 4
+    n_head: 4
+    n_embd: 96
+    mlp_ratio: 4.0
+
+  - name: gpt_5l_96d
+    n_layer: 5
+    n_head: 4
+    n_embd: 96
+    mlp_ratio: 4.0
+
+compute:
+  budgets: [1.2e12, 2.0e12, 3.2e12, 5.0e12, 8.0e12, 1.3e13, 2.0e13, 3.2e13, 5.0e13]
+
+planning:
+  min_steps_per_run: 50
+  max_steps_per_run: 30000
+
+training:
+  block_size: 128
+  batch_size: 16
+  grad_accum_steps: 1
+  learning_rate: 0.0006
+  weight_decay: 0.1
+  betas: [0.9, 0.95]
+  dropout: 0.1
+  grad_clip: 1.0
+  warmup_fraction: 0.05
+  min_lr_ratio: 0.1
+  fixed_schedule_horizon: median_per_budget
+  use_amp: true
+  save_last_checkpoint: false
+
+evaluation:
+  eval_interval_steps: 50
+  eval_batch_size: 16
+  eval_batches: 20
+  test_eval_batches: 20
